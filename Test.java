@@ -84,7 +84,7 @@ public abstract class Test {
 					} catch( Throwable t ) {
 						thrown = true;
 						System.out.print("E");
-						String new_message = "\t" + i.getName() + " failed\n";
+						String new_message = "\t" + i.getName() + " threw and exception\n";
 						new_message += "\t\t" + t.toString() + "\n";
 						addMessage(new_message);
 						this.failCount++;
