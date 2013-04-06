@@ -76,6 +76,7 @@ public abstract class Test {
 						String new_message = i.getName() + " failed\n";
 						new_message += "\t" + t.toString() + "\n";
 						addMessage(new_message);
+						this.failCount++;
 					}
 
 					if( !this.currentTest ) {
