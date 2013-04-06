@@ -11,13 +11,15 @@ import java.util.ArrayList;
 
 public abstract class Test {
 
-	private ArrayList<String> errorMessages;
+	private ArrayList<ArrayList<String>> totalErrorMessages;
 	private int failCount; //How many tests have failed
 
 	private Boolean currentTest; //Whether the current test is passing or not, changed by asserts
+	private ArrayList<String> currentMessages; //current tests messages
 
 	public Test() {
-		errorMessages = new ArrayList<String>();
+		totalErrorMessages = new ArrayList< ArrayList<String> >();
+		currentMessages = new ArrayList<String>();
 		failCount = 0;
 	}
 
@@ -26,9 +28,9 @@ public abstract class Test {
 
 		} else {
 			this.currentTest = false;
-			String new_message = "assertEqual failed\n";
-			new_message += "\t" + object1.toString() + " != " + object2.toString() + "\n";
-			new_message += "\tMessage:" + errorMessage;
+			String new_message = "\tassertEqual failed\n";
+			new_message += "\t\t" + object1.toString() + " != " + object2.toString() + "\n";
+			new_message += "\t\tUser Message: " + errorMessage;
 			addMessage(new_message);
 		}
 	}
@@ -39,9 +41,9 @@ public abstract class Test {
 
 			} else {
 				this.currentTest = false;
-				String new_message = "assertTrue failed\n";
-				new_message += "\t" + object1.toString() + " != true\n";
-				new_message += "\tMessage:" + errorMessage;
+				String new_message = "\tassertTrue failed\n";
+				new_message += "\t\t" + object1.toString() + " != true\n";
+				new_message += "\t\tUser Message: " + errorMessage;
 				addMessage(new_message);
 			}
 		} else {
@@ -50,13 +52,22 @@ public abstract class Test {
 	}
 
 	private void addMessage( String message ) {
-		this.errorMessages.add( message );
+		this.currentMessages.add( message );
+	}
+	private void finalizeMessages(String methodName) {
+		if( !currentMessages.isEmpty() ) {
+			currentMessages.add(0, methodName);
+			this.totalErrorMessages.add(currentMessages);
+		}
+		this.currentMessages = new ArrayList<String>();
 	}
 
 	private void printMessages() {
-		for( String message : this.errorMessages ) {
+		for( ArrayList<String> errorMessages : this.totalErrorMessages ) {
 			System.out.println("-------------------------------------------");
-			System.out.println( message );
+			for( String message : errorMessages ) {
+				System.out.println( message );
+			}
 		}
 	}
 
@@ -73,8 +84,8 @@ public abstract class Test {
 					} catch( Throwable t ) {
 						thrown = true;
 						System.out.print("E");
-						String new_message = i.getName() + " failed\n";
-						new_message += "\t" + t.toString() + "\n";
+						String new_message = "\t" + i.getName() + " failed\n";
+						new_message += "\t\t" + t.toString() + "\n";
 						addMessage(new_message);
 						this.failCount++;
 					}
@@ -85,7 +96,7 @@ public abstract class Test {
 					} else if(!thrown) {
 						System.out.print(".");
 					}
-
+					this.finalizeMessages(i.getName());
 				}
 			}
 			System.out.println("");
