@@ -12,19 +12,28 @@ import java.util.ArrayList;
 public class Test {
 
 	private ArrayList<String> errorMessages;
+	private int failCount; //How many tests have failed
 
 	private Boolean currentTest; //Whether the current test is passing or not, changed by asserts
 
 	public Test() {
 		errorMessages = new ArrayList<String>();
+		failCount = 0;
 	}
 
 	public void test_smokeTest() {
-		System.out.println("Hello, World!");
 		assertEqual( "a", "a", "a != a" );
 		assertEqual( "a", "b", "a != b" );
 		assertTrue(true, "true is not true");
 		assertTrue(false, "false is not true");
+	}
+	public void test_passingTests() {
+		assertEqual( "a", "a", "a != a" );
+		assertTrue(true, "true is not true");
+	}
+	public void test_exceptionTests() {
+		String[] test = new String[1];
+		assertEqual(test[3], "derp", "exception test");
 	}
 
 	public void assertEqual(Object object1, Object object2, String errorMessage) {
@@ -32,6 +41,10 @@ public class Test {
 
 		} else {
 			this.currentTest = false;
+			String new_message = "assertEqual failed\n";
+			new_message += "\t" + object1.toString() + " != " + object2.toString() + "\n";
+			new_message += "\tMessage:" + errorMessage;
+			addMessage(new_message);
 		}
 	}
 
@@ -41,7 +54,10 @@ public class Test {
 
 			} else {
 				this.currentTest = false;
-				System.out.println(errorMessage);
+				String new_message = "assertTrue failed\n";
+				new_message += "\t" + object1.toString() + " != true\n";
+				new_message += "\tMessage:" + errorMessage;
+				addMessage(new_message);
 			}
 		} else {
 			this.currentTest = false;
@@ -54,27 +70,43 @@ public class Test {
 
 	private void printMessages() {
 		for( String message : this.errorMessages ) {
+			System.out.println("-------------------------------------------");
 			System.out.println( message );
 		}
 	}
 
 	public boolean run() {
-		System.out.println( getClass().getName() );
-
 		try {
 			Method m[] = this.getClass().getDeclaredMethods();
 			for( Method i : m ) {
 				if( i.getName().startsWith("test") ) {
 					currentTest = true;
 
-					i.invoke(this);
+					Boolean thrown = false;
+					try {
+						i.invoke(this);
+					} catch( Throwable t ) {
+						thrown = true;
+						System.out.print("E");
+						String new_message = i.getName() + " failed\n";
+						new_message += "\t" + t.toString() + "\n";
+						addMessage(new_message);
+					}
 
 					if( !this.currentTest ) {
-						System.out.println("F");
-					} else {
-						System.out.println(".");
+						System.out.print("F");
+						this.failCount++;
+					} else if(!thrown) {
+						System.out.print(".");
 					}
+
 				}
+			}
+			System.out.println("");
+			if( this.failCount > 0 ) {
+				printMessages();
+				System.out.println("");
+				System.out.println("[FAILED COUNT=" + this.failCount + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
