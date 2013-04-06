@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 
-public class Test {
+public abstract class Test {
 
 	private ArrayList<String> errorMessages;
 	private int failCount; //How many tests have failed
@@ -19,21 +19,6 @@ public class Test {
 	public Test() {
 		errorMessages = new ArrayList<String>();
 		failCount = 0;
-	}
-
-	public void test_smokeTest() {
-		assertEqual( "a", "a", "a != a" );
-		assertEqual( "a", "b", "a != b" );
-		assertTrue(true, "true is not true");
-		assertTrue(false, "false is not true");
-	}
-	public void test_passingTests() {
-		assertEqual( "a", "a", "a != a" );
-		assertTrue(true, "true is not true");
-	}
-	public void test_exceptionTests() {
-		String[] test = new String[1];
-		assertEqual(test[3], "derp", "exception test");
 	}
 
 	public void assertEqual(Object object1, Object object2, String errorMessage) {
@@ -113,10 +98,5 @@ public class Test {
 		}
 
 		return true;
-	}
-
-	public static void main( String[] args ) {
-		Test tester = new Test();
-		tester.run();
 	}
 }
