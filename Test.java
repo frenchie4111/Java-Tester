@@ -86,6 +86,14 @@ public abstract class Test {
 						System.out.print("E");
 						String new_message = "\t" + i.getName() + " threw an exception\n";
 						new_message += "\t\t" + t.toString() + "\n";
+
+						Throwable cause = t.getCause();
+
+						while( cause != null ) {
+							new_message += "\t\t\t" + cause.toString() + "\n";
+							cause = cause.getCause();
+						}
+
 						addMessage(new_message);
 						this.failCount++;
 					}
