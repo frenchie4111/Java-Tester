@@ -4,6 +4,16 @@ import java.util.ArrayList;
 /*
  * Simple Java test Framework
  *
+ * Usage:
+ * 	Create your own Test___.java that extends Test
+ *  In make a main that creates an instance of 
+ *  Test___ and then calls Test___.run()
+ *  .run() will call all methods with the prefix
+ *  "test"
+ *  
+ *  So far the aserts that exist are:
+ *   assertEqual( Object o1, object o2, String message )
+ *   assertTrue( Object o, String message )
  *
  * Created by Michael Lyons <mdl0394@gmail.com>
  */
@@ -17,12 +27,25 @@ public abstract class Test {
 	private Boolean currentTest; //Whether the current test is passing or not, changed by asserts
 	private ArrayList<String> currentMessages; //current tests messages
 
+	/**
+	 * Creates an instance of Test
+	 */
 	public Test() {
 		totalErrorMessages = new ArrayList< ArrayList<String> >();
 		currentMessages = new ArrayList<String>();
 		failCount = 0;
 	}
 
+	/**
+	 * An assert for a test, checks if two objects are equal using .equal
+	 * 
+	 * The return value is not seen by you, but buy .run(), if it fails it adds
+	 * a message to a list to be printed. And calls an error
+	 * 
+	 * @param object1 - First item to be compared
+	 * @param object2 - Second item to be compared
+	 * @param errorMessage - Error message to print on fail
+	 */
 	public void assertEqual(Object object1, Object object2, String errorMessage) {
 		if( object1.equals(object2) ) {
 
@@ -35,6 +58,15 @@ public abstract class Test {
 		}
 	}
 
+	/**
+	 * An assert for a test, checks if an object is a Boolean, and if it's true
+	 * 
+	 * The return value is not seen by you, but buy .run(), if it fails it adds
+	 * a message to a list to be printed. And calls an error 
+	 * 
+	 * @param object1 - Item to test if it is true
+	 * @param errorMessage - Message to print on fail
+	 */
 	public void assertTrue(Object object1, String errorMessage) {
 		if( object1 instanceof Boolean ) {
 			if( (Boolean)object1 ) {
@@ -51,9 +83,22 @@ public abstract class Test {
 		}
 	}
 
+	/**
+	 * Adds a message to the current message
+	 * 
+	 * @param message - The message to be added
+	 */
 	private void addMessage( String message ) {
 		this.currentMessages.add( message );
 	}
+	
+	/**
+	 * To be called after every test is run, finalized it by adding it
+	 * 		to total message if it has anything
+	 * 
+	 * @param methodName - The name of the method the last set of messages
+	 * 		was for
+	 */
 	private void finalizeMessages(String methodName) {
 		if( !currentMessages.isEmpty() ) {
 			currentMessages.add(0, methodName);
@@ -62,6 +107,9 @@ public abstract class Test {
 		this.currentMessages = new ArrayList<String>();
 	}
 
+	/**
+	 * Prints all of the messages in total messages
+	 */
 	private void printMessages() {
 		for( ArrayList<String> errorMessages : this.totalErrorMessages ) {
 			System.out.println("-------------------------------------------");
@@ -71,16 +119,25 @@ public abstract class Test {
 		}
 	}
 
+	/**
+	 * Goes through every function in the class, and runs the ones that
+	 * 		start with test. For each test, if it passes it prints  . if
+	 * 		it failes because the values were wrong it prints and F, and
+	 * 		the information, and if it throws an exception (Any Throwable)
+	 * 		it prints an E and it's information
+	 * 
+	 * @return boolean if all of the tests passed
+	 */
 	public boolean run() {
 		try {
-			Method m[] = this.getClass().getDeclaredMethods();
+			Method m[] = this.getClass().getDeclaredMethods(); // Get all methods
 			for( Method i : m ) {
-				if( i.getName().startsWith("test") ) {
+				if( i.getName().startsWith("test") ) { // If it starts with the prefix test
 					currentTest = true;
 
-					Boolean thrown = false;
+					Boolean thrown = false; // If the test threw an exception
 					try {
-						i.invoke(this);
+						i.invoke(this); //Run the test
 					} catch( Throwable t ) {
 						thrown = true;
 						System.out.print("E");
@@ -90,7 +147,7 @@ public abstract class Test {
 						this.failCount++;
 					}
 
-					if( !this.currentTest ) {
+					if( !this.currentTest ) { // If the current test failed
 						System.out.print("F");
 						this.failCount++;
 					} else if(!thrown) {
@@ -104,11 +161,11 @@ public abstract class Test {
 				printMessages();
 				System.out.println("");
 				System.out.println("[FAILED COUNT=" + this.failCount + "]");
+				return false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return true;
 	}
 }
