@@ -1,5 +1,7 @@
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.io.PrintStream;
+import java.io.OutputStream;
 
 /*
  * Simple Java test Framework
@@ -72,6 +74,12 @@ public abstract class Test {
 	}
 
 	public boolean run() {
+		PrintStream original = System.out;
+		PrintStream noPrint = new PrintStream(new OutputStream() {
+												public void write(int b) {}
+											});
+
+
 		try {
 			Method m[] = this.getClass().getDeclaredMethods();
 			for( Method i : m ) {
@@ -80,15 +88,19 @@ public abstract class Test {
 
 					Boolean thrown = false;
 					try {
+						System.setOut(noPrint);
+
 						i.invoke(this);
+
+						System.setOut(original);
 					} catch( Throwable t ) {
+						System.setOut(original);
 						thrown = true;
 						System.out.print("E");
 						String new_message = "\t" + i.getName() + " threw an exception\n";
 						new_message += "\t\t" + t.toString() + "\n";
 
 						Throwable cause = t.getCause();
-
 						while( cause != null ) {
 							new_message += "\t\t\t" + cause.toString() + "\n";
 							cause = cause.getCause();
