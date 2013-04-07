@@ -30,5 +30,5 @@ public class TestExample extends Test {
 This example would run both smoke test and exmaple test, and the output would be:
 
 ```
-...
+..
 ```
