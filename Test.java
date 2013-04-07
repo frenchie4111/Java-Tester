@@ -12,12 +12,13 @@ import java.io.OutputStream;
 
 
 public abstract class Test {
-
 	private ArrayList<ArrayList<String>> totalErrorMessages;
 	private int failCount; //How many tests have failed
 
 	private Boolean currentTest; //Whether the current test is passing or not, changed by asserts
 	private ArrayList<String> currentMessages; //current tests messages
+
+	public static Boolean suppress_prints = true;
 
 	public Test() {
 		totalErrorMessages = new ArrayList< ArrayList<String> >();
@@ -88,7 +89,9 @@ public abstract class Test {
 
 					Boolean thrown = false;
 					try {
-						System.setOut(noPrint);
+						if( suppress_prints ) {
+							System.setOut(noPrint);
+						}
 
 						i.invoke(this);
 
