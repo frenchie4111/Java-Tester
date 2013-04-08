@@ -1,5 +1,7 @@
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.io.PrintStream;
+import java.io.OutputStream;
 
 /*
  * Simple Java test Framework
@@ -20,12 +22,13 @@ import java.util.ArrayList;
 
 
 public abstract class Test {
-
 	private ArrayList<ArrayList<String>> totalErrorMessages;
 	private int failCount; //How many tests have failed
 
 	private Boolean currentTest; //Whether the current test is passing or not, changed by asserts
 	private ArrayList<String> currentMessages; //current tests messages
+
+	public static Boolean suppress_prints = true;
 
 	/**
 	 * Creates an instance of Test
@@ -129,6 +132,12 @@ public abstract class Test {
 	 * @return boolean if all of the tests passed
 	 */
 	public boolean run() {
+		PrintStream original = System.out;
+		PrintStream noPrint = new PrintStream(new OutputStream() {
+												public void write(int b) {}
+											});
+
+
 		try {
 			Method m[] = this.getClass().getDeclaredMethods(); // Get all methods
 			for( Method i : m ) {
@@ -137,12 +146,26 @@ public abstract class Test {
 
 					Boolean thrown = false; // If the test threw an exception
 					try {
-						i.invoke(this); //Run the test
+						if( suppress_prints ) {
+							System.setOut(noPrint);
+						}
+
+						i.invoke(this);
+
+						System.setOut(original);
 					} catch( Throwable t ) {
+						System.setOut(original);
 						thrown = true;
 						System.out.print("E");
 						String new_message = "\t" + i.getName() + " threw an exception\n";
 						new_message += "\t\t" + t.toString() + "\n";
+
+						Throwable cause = t.getCause();
+						while( cause != null ) {
+							new_message += "\t\t\t" + cause.toString() + "\n";
+							cause = cause.getCause();
+						}
+
 						addMessage(new_message);
 						this.failCount++;
 					}

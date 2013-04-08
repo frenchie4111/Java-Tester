@@ -2,6 +2,7 @@
 public class TestTester extends Test {
 	
 	public void test_smokeTest() {
+		System.out.println("THIS SHOULDN'T PRINT");
 		assertEqual( "a", "a", "a != a" );
 		assertEqual( "a", "b", "a != b" );
 		assertTrue(true, "true is not true");
