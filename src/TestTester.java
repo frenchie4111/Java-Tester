@@ -1,3 +1,5 @@
+import org.mikelyons.jtest.*;
+
 public class TestTester extends Test {
 	
 	public void test_smokeTest() {
@@ -18,8 +20,8 @@ public class TestTester extends Test {
 		assertEqual(test[3], "derp", "exception test");
 	}
 
-	/**public static void main( String[] args ) {
+	public static void main( String[] args ) {
 		Test tester = new TestTester();
 		tester.run();
-	}*/
+	}
 }
