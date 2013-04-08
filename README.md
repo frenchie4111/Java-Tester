@@ -13,7 +13,13 @@ This in an exmaple for writing TestExample.java which runs a few example tests
 
 Right clicking the project -> Properties -> Java Build Path -> Libraries -> Add External Jar -> Wherever you dowloaded Test.jar to on your computer.
 If you are not using eclipse while building through command line you need the command 
+```
 javac -d bin;/path/to/Test.jar -sourcepath src /src/TestExample.java
+```
+(This is assuming all of your source files are saved in the src folder and all of your .class files are build to /bin) <br/>
+<a href="http://www.sergiy.ca/how-to-compile-and-launch-java-code-from-command-line/">This is a nice guide for compiling java through command line</a>
+
+Here is the TestExample.java source
 
 ```Java
 include org.mikelyons.jtest.*;
@@ -34,7 +40,13 @@ public class TestExample extends Test {
 }
 ```
 
-This example would run both smoke test and exmaple test, and the output would be:
+After running with:
+```
+javac -cp /bin;/path/to/Test.jar TestExmaple
+```
+Or f11 (default) in ecplise
+
+The expected output would be:
 
 ```
 ..
