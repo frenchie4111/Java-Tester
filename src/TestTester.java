@@ -1,3 +1,4 @@
+import org.mikelyons.jtest.*;
 
 public class TestTester extends Test {
 	
