@@ -42,7 +42,7 @@ public class TestExample extends Test {
 
 After running with:
 ```
-javac -cp /bin;/path/to/Test.jar TestExmaple
+java -cp /bin;/path/to/Test.jar TestExmaple
 ```
 Or f11 (default) in ecplise
 
