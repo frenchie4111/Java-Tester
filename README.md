@@ -5,7 +5,8 @@ Java Testing Framework
 
 This testing is intended to act as much like jUnit as possible without having to messily install jUnit.
 
-Ussage:
+Using with Test.jar
+-------------------
 
 If you are using eclipse you should add Test.jar to your project by: 
 
