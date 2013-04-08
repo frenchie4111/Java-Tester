@@ -191,4 +191,9 @@ public abstract class Test {
 		}
 		return true;
 	}
+
+	public static void main( String[] args ) {
+		Test tester = this.getClass().newInstance();
+		tester.run();
+	}
 }
