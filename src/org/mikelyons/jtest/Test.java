@@ -124,6 +124,12 @@ public abstract class Test {
 		}
 	}
 
+	private class noPrint extends OutputStream {
+		public void write(int b) {
+			// NOOP
+		}
+	}
+
 	/**
 	 * Goes through every function in the class, and runs the ones that
 	 * 		start with test. For each test, if it passes it prints  . if
@@ -135,9 +141,7 @@ public abstract class Test {
 	 */
 	public boolean run() {
 		PrintStream original = System.out;
-		PrintStream noPrint = new PrintStream(new OutputStream() {
-												public void write(int b) {}
-											});
+		PrintStream noPrint = new PrintStream(new noPrint());
 
 
 		try {
